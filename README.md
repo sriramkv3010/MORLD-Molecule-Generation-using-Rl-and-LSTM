@@ -25,26 +25,37 @@ This project enables the generation of novel, valid, and drug-like molecules as 
 
 ```
 .
-├── dataset/                       # Raw .smi files
-├
-│── preprocessing_step_1.smi  # Canonicalized SMILES
-│── tokenized_data.pkl        # Tokenized SMILES and dictionaries
-│── split_data/               # Data splits for training
-├── saved_model/Orig/
-│── lstm_generator.h5         # Pretrained LSTM model
-│── lstm_finetuned_rl.h5      # RL fine-tuned model
-│── rewards_log.csv           # RL reward log
-│── reward_plot.png           # Reward progression
-├── generated_smiles_CN.smi       # Generated SMILES with validity
-├── generated_molecules_CN.png    # Image grid of valid molecules
-├── preprocess.py                 # Data preprocessing script
-├── tokenize_smiles.py            # SMILES tokenization
-├── split_data_tokens.py          # Data splitting
-├── train_model.py                # LSTM model training
-├── RLfinetune.py                 # RL fine-tuning script
-├── testRLLSTM.py                 # Generation and evaluation
-├── requirements.txt              # Python dependencies
-└── RL-LSTM_model.ipynb           # Jupyter notebook (pipeline demo)
+├── data/                           # Raw .smi files
+│   ├── CCAB.smi
+│   ├── CCAB.pkl
+│   └── README.md
+│
+├── src/
+│   ├── preprocess.py               # Data preprocessing script
+│   ├── tokenize_smiles.py          # Tokenized SMILES and dictionaries
+│   ├── split_data_tokens.py        # Data splits for training
+│   ├── train_model.py              # LSTM model training
+│   ├── RLfinetune.py               # RL fine-tuning script
+│   ├── testRLLSTM.py               # Generation and evaluation
+│   ├── test.py                     # Utility script for data testing
+│   ├── comparison.py               # Compares baseline LSTM vs RL fine-tuned model results
+│   ├── molwtdist.py                # Plots molecular weight distribution of generated molecules
+│   ├── plot.py                     # Generates training and reward progression plots
+│   └── RL+LSTM_model.ipynb         # Jupyter notebook (pipeline demo)
+│
+├── results/ 
+│   ├── generated_smiles_CN.smi     # Generated SMILES with validity
+│   ├── README.md
+│   └── figures/
+│       ├── training_loss_accuracy.png
+│       ├── cumulative_rewards.png
+|       ├── generated_smiles_CN.png  # Image grid of valid molecules  
+│       └── (other generated plots)
+│
+├── Documentation Report.pdf
+├── requirements.txt                # Python dependencies
+└── README.md
+          
 ```
 
 ---
