@@ -9,7 +9,7 @@ from tensorflow.keras.preprocessing.sequence import pad_sequences
 import csv
 import matplotlib.pyplot as plt
 
-# ✅ Load Model and Tokenizer
+# Load Model and Tokenizer
 MODEL_PATH = "/home/satya/Desktop/BIOInfromaticsRl-LSTM/saved_model/Orig/lstm_generator.h5"
 DATA_PATH = "/home/satya/Desktop/BIOInfromaticsRl-LSTM/processed_data/split_data/split_1.pkl"
 
@@ -24,28 +24,28 @@ training_smiles_set = set(data.get("smiles", []))
 
 vocab_size = len(token_to_idx)
 
-# ✅ Tokenizer
+#Tokenizer
 PATTERN = r"(\[[^\]]+\]|Br|Cl|Si|Se|B|C|N|O|P|S|F|I|[a-z]|@{1,2}|#|=|\\|\/|\+|-|\(|\)|\d+)"
 def tokenize_smiles(s): return re.findall(PATTERN, s)
 def detokenize(indices):
     tokens = [idx_to_token.get(i, "") for i in indices if idx_to_token.get(i, "") not in ["<PAD>", "<UNK>"]]
     return "".join(tokens)
 
-# ✅ Reward Function Helpers
+# Reward Function Helpers
 def is_valid(s): return Chem.MolFromSmiles(s) is not None
 def is_novel(s): return s not in training_smiles_set
 
-# ✅ Desired Fragments (Multiple)
+# Desired Fragments (Multiple)
 FRAGMENTS = ["CN", "C(=O)O", "CC"]
 
-# ✅ Initialize CSV file for logging reward metrics
+# Initialize CSV file for logging reward metrics
 metrics_log_path = "/home/satya/Desktop/BIOInfromaticsRl-LSTM/results/RL_Training/reward_metrics_log.csv"
 os.makedirs(os.path.dirname(metrics_log_path), exist_ok=True)
 with open(metrics_log_path, mode="w", newline="") as file:
     writer = csv.writer(file)
     writer.writerow(["Epoch", "Validity", "Fragments", "Novelty", "QED", "Total Reward"])
 
-# ✅ Compute Reward
+# Compute Reward
 def compute_reward(smiles):
     mol = Chem.MolFromSmiles(smiles)
     if mol is None:
@@ -71,7 +71,7 @@ def compute_reward(smiles):
     total_reward = validity_reward + fragment_reward + novelty_reward + qed_score
     return total_reward, validity_reward, fragment_reward, novelty_reward, qed_score
 
-# ✅ SMILES Sampler
+# SMILES Sampler
 def sample_smiles(start_token="C"):
     tokens = [token_to_idx.get(start_token, 1)]
     for _ in range(max_length - 1):
@@ -84,7 +84,7 @@ def sample_smiles(start_token="C"):
             break
     return detokenize(tokens), tokens
 
-# ✅ REINFORCE Training Step
+# REINFORCE Training Step
 optimizer = tf.keras.optimizers.Adam(learning_rate=5e-4)
 
 def train_step():
@@ -108,7 +108,7 @@ def train_step():
     optimizer.apply_gradients(zip(grads, model.trainable_variables))
     return smiles, reward, total_loss.numpy()
 
-# ✅ Training Loop
+# Training Loop
 EPOCHS = 100
 total_reward_history = []
 cumulative_validity = []
@@ -134,11 +134,11 @@ for episode in range(EPOCHS):
     print(f"🎯Cumulative Validity: {cumulative_validity[-1]:.2f} | Cumulative Fragments: {cumulative_fragments[-1]:.2f} | "
           f"Cumulative Novelty: {cumulative_novelty[-1]:.2f} | Cumulative QED: {cumulative_qed[-1]:.2f}")
 
-# ✅ Save Fine-Tuned Model
+# Save Fine-Tuned Model
 model.save("/home/satya/Desktop/BIOInfromaticsRl-LSTM/saved_model/Orig/lstm_finetuned_rl.h5")
 print("Fine-tuned model saved.")
 
-# ✅ Plot Cumulative Metrics
+# Plot Cumulative Metrics
 metrics = {
     "Validity": cumulative_validity,
     "Fragments": cumulative_fragments,
