@@ -3,13 +3,12 @@ import re
 import logging
 import pickle
 from rdkit import Chem
-import matplotlib.pyplot as plt  # ✅ Import matplotlib for plotting
+import matplotlib.pyplot as plt  
 
-# ✅ Set up logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-# ✅ Regular expression for SMILES tokenization (Now includes lowercase letters)
+# Regular expression for SMILES tokenization (Now includes lowercase letters)
 PATTERN = r"(\[[^\]]+\]|Br|Cl|Si|Se|B|C|N|O|P|S|F|I|@{1,2}|#|=|\\|\/|\+|-|\(|\)|\d+|[a-z])"
 
 def load_valid_smiles(file_path):
@@ -43,7 +42,7 @@ def create_token_dicts(tokenized_smiles):
     """Creates character-to-index and index-to-character mappings."""
     unique_tokens = sorted(set(token for smiles in tokenized_smiles for token in smiles))
 
-    # ✅ Add padding and unknown tokens for safety
+    # Add padding and unknown tokens for safety
     char_to_idx = {"<PAD>": 0, "<UNK>": 1}  # Start indexing from 0
     char_to_idx.update({token: i + 2 for i, token in enumerate(unique_tokens)})  
 
@@ -71,7 +70,7 @@ def save_tokenized_data(tokenized_smiles, char_to_idx, idx_to_char, file_path):
 
 def display_samples(tokenized_smiles, num_samples=5):
     """Display sample tokenized SMILES."""
-    logger.info("🔍 Sample tokenized SMILES:")
+    logger.info("Sample tokenized SMILES:")
     for i, tokens in enumerate(tokenized_smiles[:num_samples]):
         print(f"SMILES {i+1}: {tokens}")
 
@@ -116,12 +115,10 @@ def plot_token_counts(token_counts, save_path=None):
     plt.title("Normalized SMILES Token Counts")
     plt.xticks(rotation=90)
     plt.tight_layout()
-
-    # Add legend
     plt.legend(bars, tokens, title="Tokens", bbox_to_anchor=(1.05, 1), loc="upper left", fontsize="small")
 
     if save_path:
-        os.makedirs(os.path.dirname(save_path), exist_ok=True)  # Ensure the directory exists
+        os.makedirs(os.path.dirname(save_path), exist_ok=True)  
         plt.savefig(save_path, bbox_inches="tight")
         logger.info("📊 Normalized token count plot saved to: %s", save_path)
     else:
@@ -138,7 +135,6 @@ def plot_validity_graph(valid_smiles, invalid_smiles_count, save_path=None):
     plt.figure(figsize=(6, 4))
     bars = plt.bar(labels, normalized_counts, color=["green", "red"])
 
-    # Add counts and proportions on top of bars
     add_counts_to_bars(bars, absolute_counts, normalized_counts)
 
     plt.xlabel("Molecule Validity")
@@ -158,16 +154,16 @@ if __name__ == "__main__":
     output_file = "/home/satya/Desktop/BIOInfromaticsRl-LSTM/processed_data/tokenized_data.pkl"
 
     if not os.path.exists(input_file):
-        logger.error("🚨 File not found: %s", input_file)
+        logger.error("File not found: %s", input_file)
     else:
         logger.info("📂 Loading and tokenizing SMILES from %s", input_file)
         smiles_list = load_valid_smiles(input_file)
         
         if not smiles_list:
-            logger.error("🚨 No valid SMILES found. Exiting.")
+            logger.error(" No valid SMILES found. Exiting.")
             exit(1)
 
-        logger.info("✅ Loaded %d valid SMILES", len(smiles_list))
+        logger.info(" Loaded %d valid SMILES", len(smiles_list))
         
         tokenized_smiles = tokenize_smiles(smiles_list)
         char_to_idx, idx_to_char = create_token_dicts(tokenized_smiles)
